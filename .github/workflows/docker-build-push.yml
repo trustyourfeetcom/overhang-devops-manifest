@@ -5,45 +5,29 @@ on:
     types: [docker-build-push]
 
 jobs:
-  build:
+  docker:
     runs-on: ubuntu-latest
 
     env:
       DOCKER_NAMESPACE: samjsui
 
     steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
     - name: Checkout service code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: ${{ github.event.client_payload.service_repo }}
         ref: ${{ github.event.client_payload.commit_sha }}
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
     - name: Build Docker image
       id: build
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         context: .
-        load: true
-        tags: ${{ env.DOCKER_REGISTRY }}/${{ github.event.client_payload.service_name }}:${{ github.event.client_payload.commit_sha }}
-
-  push:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Push Docker image
-      env:
-        DOCKER_NAMESPACE: ${{ env.DOCKER_NAMESPACE }}
-        SERVICE_NAME: ${{ github.event.client_payload.service_name }}
-        COMMIT_SHA: ${{ github.event.client_payload.commit_sha }}
-      run: |
-        docker push $DOCKER_NAMESPACE/$SERVICE_NAME:$COMMIT_SHA
+        push: true
+        tags: ${{ env.DOCKER_NAMESPACE }}/${{ github.event.client_payload.service_name }}:${{ github.event.client_payload.image_tag }}
