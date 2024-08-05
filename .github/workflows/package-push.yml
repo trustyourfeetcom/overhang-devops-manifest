@@ -1,8 +1,8 @@
-name: Docker Build and Push
+name: Package and Push
 
 on:
   repository_dispatch:
-    types: [docker-build-push]
+    types: [package-push]
 
 jobs:
   docker:
