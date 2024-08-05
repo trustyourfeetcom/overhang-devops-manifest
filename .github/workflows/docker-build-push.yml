@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout service code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: ${{ github.event.client_payload.service_repo }}
         ref: ${{ github.event.client_payload.commit_sha }}
@@ -27,7 +27,7 @@ jobs:
       with:
         context: .
         load: true
-        tags: ${{ env.DOCKER_REGISTRY }}/${{ github.event.client_payload.service_name }}:${{ github.event.client_payload.commit_sha }}
+        tags: ${{ env.DOCKER_REGISTRY }}/${{ github.event.client_payload.service_name }}:${{ github.event.client_payload.image_tag }}
 
   push:
     runs-on: ubuntu-latest
