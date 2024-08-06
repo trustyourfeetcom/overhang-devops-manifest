@@ -15,7 +15,7 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ .Values.ingress.backend.serviceName }}
+            name: {{ .Values.ingress.backend.serviceName | default "overhang-backend-gateway" }}
             port:
               number: {{ .Values.ingress.backend.servicePort }}
       {{- end }}
