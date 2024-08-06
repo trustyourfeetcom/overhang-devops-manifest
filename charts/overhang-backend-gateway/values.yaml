@@ -19,14 +19,20 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+environment:
+  variables:
+    - name: ENV_VAR
+      value: "value"
+
 ingress:
   enabled: true
   host: dev.overhang.trustyourfeet.com
   annotations:
     kubernetes.io/ingress.class: nginx
   paths:
-    - path: /
-      pathType: Prefix
+    path: /
+    pathType: Prefix
   backend:
-    serviceName: overhang-backend-gateway
-    servicePort: 8080
+    service: 
+      name: overhang-backend-gateway
+      port: 8080

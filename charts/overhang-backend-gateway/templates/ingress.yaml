@@ -1,22 +1,17 @@
-{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: overhang-backend-gateway-ingress
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
   rules:
   - host: {{ .Values.ingress.host }}
     http:
       paths:
-      {{- range .Values.ingress.paths }}
-      - path: {{ .path }}
+        path: {{ .Values.ingress.paths.path }}
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ .Values.ingress.backend.serviceName | default "overhang-backend-gateway" }}
+            name: {{ .Values.ingress.backend.service.name }}
             port:
-              number: {{ .Values.ingress.backend.servicePort }}
-      {{- end }}
-{{- end }}
+              number: {{ .Values.ingress.backend.service.port }}
