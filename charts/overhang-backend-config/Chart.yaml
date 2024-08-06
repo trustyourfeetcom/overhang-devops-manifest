@@ -1,0 +1,5 @@
+apiVersion: v2
+name: overhang-backend-config
+description: Helm chart for the Overhang Config Service
+version: 0.1.0
+appVersion: 1.0
