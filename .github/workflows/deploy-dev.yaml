@@ -37,9 +37,10 @@ jobs:
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-    - name: Save DigitalOcean kubeconfig
+    - name: Save DigitalOcean kubeconfig and setup Kubernetes context
       run: |
         doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
+        kubectl config current-context
 
   deploy:
     runs-on: ubuntu-latest
