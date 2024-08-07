@@ -18,7 +18,7 @@ spec:
       - name: {{ .Release.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: {{ .Values.service.port }}
+        - containerPort: {{ index .Values.service.ports 0 "port" }}
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}
