@@ -10,10 +10,10 @@ jobs:
     env:
       DOCKERHUB_NAMESPACE: samjsui
       SERVICES: |
-        overhang-backend-gateway
-        overhang-backend-discovery
-        overhang-backend-auth
         overhang-backend-config
+        overhang-backend-registry
+        overhang-backend-auth
+        overhang-backend-gateway
 
     steps:
       

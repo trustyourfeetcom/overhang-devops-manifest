@@ -1,0 +1,5 @@
+apiVersion: v2
+name: overhang-backend-registry
+description: Helm chart for the Overhang Registry Service
+version: 0.1.0
+appVersion: "1.0"
