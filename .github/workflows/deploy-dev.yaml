@@ -51,15 +51,6 @@ jobs:
         # run: echo "K8S_NAMESPACE=${{ github.actor_id }}" >> $GITHUB_ENV
         run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
 
-      - name: Create Docker Registry Secret
-        run: |
-          kubectl create secret docker-registry dev-overhang-registry \
-            --docker-server=https://index.docker.io/v1/ \
-            --docker-username=${{ secrets.DOCKERHUB_USERNAME }} \
-            --docker-password=${{ secrets.DOCKERHUB_TOKEN }} \
-            --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
-            -n $K8S_NAMESPACE || echo "Secret already exists"
-
       # - name: Check if namespace exists on the cluster
       #   id: check_namespace
       #   env:
@@ -93,6 +84,15 @@ jobs:
           else
             echo "Namespace $INGRESS_NGINX_K8S_NAMESPACE does not exist, skipping cleanup."
           fi
+
+      - name: Create Docker Registry Secret
+        run: |
+          kubectl create secret docker-registry dev-overhang-registry \
+            --docker-server=https://index.docker.io/v1/ \
+            --docker-username=${{ secrets.DOCKERHUB_USERNAME }} \
+            --docker-password=${{ secrets.DOCKERHUB_TOKEN }} \
+            --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
+            -n $K8S_NAMESPACE || echo "Secret already exists"
 
       - name: Install NGINX Ingress Controller
         run: |
