@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "overhang-backend-registry.fullname" . }}
+  name: {{ .Release.name }}
   labels:
-    app: {{ include "overhang-backend-registry.fullname" . }}
+    app: {{ .Release.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "overhang-backend-registry.fullname" . }}
+      app: {{ .Release.name }}
   template:
     metadata:
       labels:
-        app: {{ include "overhang-backend-registry.fullname" . }}
+        app: {{ .Release.name }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets.name }}
       containers:
-      - name: {{ include "overhang-backend-registry.fullname" . }}
+      - name: {{ .Release.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: {{ .Values.service.port }}

@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "overhang-backend-config.fullname" . }}
+  name: {{ .Release.name }}
   labels:
-    app: {{ include "overhang-backend-config.fullname" . }}
+    app: {{ .Release.name }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.port }}
   selector:
-    app: {{ include "overhang-backend-config.fullname" . }}
+    app: {{ .Release.name }}

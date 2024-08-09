@@ -103,7 +103,6 @@ jobs:
       - name: Deploy Config Service (overhang-backend-config)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_CONFIG_NAME ./charts/$OVERHANG_BACKEND_CONFIG_NAME \
-            --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_CONFIG_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
             --namespace $K8S_NAMESPACE --create-namespace
@@ -111,7 +110,6 @@ jobs:
       - name: Deploy Registry Service (overhang-backend-registry)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_REGISTRY_NAME ./charts/$OVERHANG_BACKEND_REGISTRY_NAME \
-            --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_REGISTRY_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
@@ -120,7 +118,6 @@ jobs:
       - name: Deploy Auth Service (overhang-backend-auth)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_AUTH_NAME ./charts/$OVERHANG_BACKEND_AUTH_NAME \
-            --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_AUTH_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
@@ -130,7 +127,6 @@ jobs:
       - name: Deploy Gateway Service (overhang-backend-gateway)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_GATEWAY_NAME ./charts/$OVERHANG_BACKEND_GATEWAY_NAME \
-            --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_GATEWAY_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \

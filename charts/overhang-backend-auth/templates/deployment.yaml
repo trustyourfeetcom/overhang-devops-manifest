@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "overhang-backend-auth.fullname" . }}
+  name: {{ .Release.Name }}
   labels:
-    app: {{ include "overhang-backend-auth.fullname" . }}
+    app: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "overhang-backend-auth.fullname" . }}
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "overhang-backend-auth.fullname" . }}
+        app: {{ .Release.Name }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets.name }}
       containers:
-      - name: {{ include "overhang-backend-auth.fullname" . }}
+      - name: {{ .Release.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -34,7 +34,7 @@ spec:
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ include "overhang-backend-auth.fullname" . }}
+              name: {{ .Release.Name }}
               key: jwtSecret
         {{- range .Values.environment.variables }}
         - name: {{ .name }}
