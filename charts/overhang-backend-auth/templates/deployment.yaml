@@ -29,6 +29,11 @@ spec:
             cpu: {{ .Values.resources.requests.cpu }}
             memory: {{ .Values.resources.requests.memory }}
         env:
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "overhang-backend-auth.fullname" . }}
+              key: jwtSecret
         {{- range .Values.environment.variables }}
         - name: {{ .name }}
           value: {{ .value | quote }}

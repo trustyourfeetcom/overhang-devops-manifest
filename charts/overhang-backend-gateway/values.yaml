@@ -26,8 +26,10 @@ resources:
 
 environment:
   variables:
-    - name: ENV_VAR
-      value: "value"
+    - name: SPRING_CONFIG_IMPORT
+      value: "http://overhang-backend-config:8888"
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
 
 ingress:
   enabled: true
