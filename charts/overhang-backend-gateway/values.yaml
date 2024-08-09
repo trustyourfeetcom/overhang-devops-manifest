@@ -26,8 +26,6 @@ resources:
 
 environment:
   variables:
-    - name: SPRING_CONFIG_IMPORT
-      value: "overhang-backend-config"
     - name: SPRING_PROFILES_ACTIVE
       value: dev
 
@@ -44,3 +42,7 @@ ingress:
   backend:
     serviceName: overhang-backend-gateway
     servicePort: 8080
+
+spring:
+  config:
+    import: http://overhang-backend-config:8888

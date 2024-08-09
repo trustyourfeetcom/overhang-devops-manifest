@@ -29,6 +29,8 @@ spec:
             cpu: {{ .Values.resources.requests.cpu }}
             memory: {{ .Values.resources.requests.memory }}
         env:
+        - name: SPRING_CONFIG_IMPORT
+          value: {{ .Values.spring.config.import }}
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
