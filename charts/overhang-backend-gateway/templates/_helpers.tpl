@@ -1,5 +1,5 @@
 {{- define "overhang-backend-gateway.fullname" -}}
-{{- printf "%s-%s" .Release.Name "overhang-backend-gateway" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s" .Release.Name "overhang-backend-gateway" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "overhang-backend-gateway.labels" -}}
