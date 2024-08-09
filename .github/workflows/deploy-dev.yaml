@@ -112,7 +112,7 @@ jobs:
               --set image.repository=$DOCKERHUB_NAMESPACE/$SERVICE \
               --set image.tag=latest \
               --set namespace=$K8S_NAMESPACE \
-              --namespace $K8S_NAMESPACE --create-namespace --wait
+              --namespace $K8S_NAMESPACE --create-namespace
           done
 
       - name: Verify deployments
