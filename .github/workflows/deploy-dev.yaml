@@ -74,15 +74,15 @@ jobs:
             echo "Namespace $K8S_NAMESPACE does not exist, skipping cleanup."
           fi
 
-      # - name: Clean up Ingress Nginx namespace
-      #   run: |
-      #     if kubectl get namespace $INGRESS_NGINX_K8S_NAMESPACE; then
-      #       kubectl delete all --all -n $INGRESS_NGINX_K8S_NAMESPACE
-      #       kubectl delete configmaps --all -n $INGRESS_NGINX_K8S_NAMESPACE
-      #       kubectl delete secrets --all -n $INGRESS_NGINX_K8S_NAMESPACE
-      #     else
-      #       echo "Namespace $INGRESS_NGINX_K8S_NAMESPACE does not exist, skipping cleanup."
-      #     fi
+      - name: Clean up Ingress Nginx namespace
+        run: |
+          if kubectl get namespace $INGRESS_NGINX_K8S_NAMESPACE; then
+            kubectl delete all --all -n $INGRESS_NGINX_K8S_NAMESPACE
+            kubectl delete configmaps --all -n $INGRESS_NGINX_K8S_NAMESPACE
+            kubectl delete secrets --all -n $INGRESS_NGINX_K8S_NAMESPACE
+          else
+            echo "Namespace $INGRESS_NGINX_K8S_NAMESPACE does not exist, skipping cleanup."
+          fi
 
       - name: Create Docker Registry Secret
         run: |
