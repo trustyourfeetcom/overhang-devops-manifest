@@ -3,7 +3,8 @@ namespace: default
 replicaCount: 1
 
 image:
-  repository: samjsui/overhang-backend-gateway
+  namespace: samjsui
+  repository: overhang-backend-gateway
   tag: latest
   pullPolicy: IfNotPresent
 

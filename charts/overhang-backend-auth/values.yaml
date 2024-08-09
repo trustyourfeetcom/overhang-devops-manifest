@@ -1,7 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: samjsui/overhang-backend-auth
+  namespace: samjsui
+  repository: overhang-backend-auth
   tag: latest
   pullPolicy: IfNotPresent
 
