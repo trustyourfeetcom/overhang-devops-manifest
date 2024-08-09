@@ -2,10 +2,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: overhang-backend-gateway-ingress
+  name: {{ include "overhang-backend-gateway.fullname" . }}-ingress
+  labels:
+    {{- include "overhang-backend-gateway.labels" . | nindent 4 }}
   annotations:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
+  ingressClassName: {{ .Values.ingress.spec.ingressClassName | default "nginx" }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:

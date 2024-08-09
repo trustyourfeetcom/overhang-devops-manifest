@@ -16,66 +16,84 @@ jobs:
         overhang-backend-gateway
 
     steps:
-      
-    - name: Check out repository
-      uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v4
-      with:
-        version: 'latest'
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "latest"
 
-    - name: Set up Helm
-      uses: azure/setup-helm@v4.2.0
-      with:
-        version: 'latest'
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.2.0
+        with:
+          version: "latest"
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-    - name: Save DigitalOcean kubeconfig and setup Kubernetes context
-      run: |
-        doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
-        kubectl config current-context
+      - name: Save DigitalOcean kubeconfig and setup Kubernetes context
+        run: |
+          doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
+          kubectl config current-context
 
-    - name: Determine Kubernetes namespace name
-      id: determine_namespace
-      run: echo "K8S_NAMESPACE=${{ github.actor_id }}" >> $GITHUB_ENV
+      - name: Determine Kubernetes namespace name
+        id: determine_namespace
+        # run: echo "K8S_NAMESPACE=${{ github.actor_id }}" >> $GITHUB_ENV
+        run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
 
-    - name: Check if namespace exists on the cluster
-      id: check_namespace
-      env:
-        K8S_NAMESPACE: ${{ env.K8S_NAMESPACE }}
-      run: |
-        if kubectl get namespace $K8S_NAMESPACE; then
-          echo "Namespace $K8S_NAMESPACE already exists."
-          echo "K8S_NAMESPACE_EXISTS=true" >> $GITHUB_ENV
-        else
-          echo "Creating namespace $K8S_NAMESPACE."
-          kubectl create namespace $K8S_NAMESPACE
-          echo "K8S_NAMESPACE_EXISTS=false" >> $GITHUB_ENV
-        fi
+      # - name: Check if namespace exists on the cluster
+      #   id: check_namespace
+      #   env:
+      #     K8S_NAMESPACE: ${{ env.K8S_NAMESPACE }}
+      #   run: |
+      #     if kubectl get namespace $K8S_NAMESPACE; then
+      #       echo "Namespace $K8S_NAMESPACE already exists."
+      #       echo "K8S_NAMESPACE_EXISTS=true" >> $GITHUB_ENV
+      #     else
+      #       echo "Creating namespace $K8S_NAMESPACE."
+      #       kubectl create namespace $K8S_NAMESPACE
+      #       echo "K8S_NAMESPACE_EXISTS=false" >> $GITHUB_ENV
+      #     fi
 
-    - name: Deploy all services with Helm
-      env:
-        K8S_NAMESPACE: ${{ env.K8S_NAMESPACE }}
-        DOCKERHUB_NAMESPACE: ${{ env.DOCKERHUB_NAMESPACE }}
-      run: |
-        for SERVICE in $SERVICES; do
-          helm upgrade --install $SERVICE ./charts/$SERVICE \
-            --set image.repository=$DOCKERHUB_NAMESPACE/$SERVICE \
-            --set image.tag=latest \
-            --namespace $K8S_NAMESPACE
-        done
+      - name: Clean up namespace
+        run: |
+          if kubectl get namespace $K8S_NAMESPACE_EXISTS; then
+            kubectl delete all --all -n $K8S_NAMESPACE
+            kubectl delete configmaps --all -n $K8S_NAMESPACE
+            kubectl delete secrets --all -n $K8S_NAMESPACE
+          else
+            echo "Namespace $K8S_NAMESPACE does not exist, skipping cleanup."
+          fi
 
-    - name: Verify deployments
-      run: |
-        kubectl get pods -n $K8S_NAMESPACE
+      - name: Install NGINX Ingress Controller
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx --create-namespace --wait
+
+      - name: Deploy all services with Helm
+        env:
+          K8S_NAMESPACE: ${{ env.K8S_NAMESPACE }}
+          DOCKERHUB_NAMESPACE: ${{ env.DOCKERHUB_NAMESPACE }}
+        run: |
+          for SERVICE in $SERVICES; do
+            helm upgrade --install $SERVICE ./charts/$SERVICE \
+              --set image.repository=$DOCKERHUB_NAMESPACE/$SERVICE \
+              --set image.tag=latest \
+              --set namespace=$K8S_NAMESPACE \
+              --namespace $K8S_NAMESPACE --create-namespace --wait
+          done
+
+      - name: Verify deployments
+        run: |
+          kubectl get pods -n $K8S_NAMESPACE
