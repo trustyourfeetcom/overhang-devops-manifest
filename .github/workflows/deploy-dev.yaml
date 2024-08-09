@@ -9,7 +9,7 @@ jobs:
 
     env:
       DOCKERHUB_NAMESPACE: samjsui
-      INGRESS_NGINX_NAMESPACE: ingress-nginx
+      INGRESS_NGINX_K8S_NAMESPACE: ingress-nginx
       SERVICES: |
         overhang-backend-config
         overhang-backend-registry
@@ -77,22 +77,12 @@ jobs:
 
       - name: Clean up Ingress Nginx namespace
         run: |
-          if kubectl get namespace $INGRESS_NGINX_NAMESPACE; then
-            kubectl delete all --all -n $INGRESS_NGINX_NAMESPACE
-            kubectl delete configmaps --all -n $INGRESS_NGINX_NAMESPACE
-            kubectl delete secrets --all -n $INGRESS_NGINX_NAMESPACE
+          if kubectl get namespace $INGRESS_NGINX_K8S_NAMESPACE; then
+            kubectl delete all --all -n $INGRESS_NGINX_K8S_NAMESPACE
+            kubectl delete configmaps --all -n $INGRESS_NGINX_K8S_NAMESPACE
+            kubectl delete secrets --all -n $INGRESS_NGINX_K8S_NAMESPACE
           else
-            echo "Namespace $INGRESS_NGINX_NAMESPACE does not exist, skipping cleanup."
-          fi
-
-      - name: Clean up namespace
-        run: |
-          if kubectl get namespace ingress-nginx; then
-            kubectl delete all --all -n ingress-nginx
-            kubectl delete configmaps --all -n ingress-nginx
-            kubectl delete secrets --all -n ingress-nginx
-          else
-            echo "Namespace ingress-nginx does not exist, skipping cleanup."
+            echo "Namespace $INGRESS_NGINX_K8S_NAMESPACE does not exist, skipping cleanup."
           fi
 
       - name: Install NGINX Ingress Controller
