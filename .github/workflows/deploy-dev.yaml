@@ -46,6 +46,11 @@ jobs:
           doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
           kubectl config current-context
 
+      - name: Determine Kubernetes namespace name
+        id: determine_namespace
+        # run: echo "K8S_NAMESPACE=${{ github.actor_id }}" >> $GITHUB_ENV
+        run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
+
       - name: Create Docker Registry Secret
         run: |
           kubectl create secret docker-registry dev-overhang-registry \
@@ -53,12 +58,7 @@ jobs:
             --docker-username=${{ secrets.DOCKERHUB_USERNAME }} \
             --docker-password=${{ secrets.DOCKERHUB_TOKEN }} \
             --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
-            -n dev || echo "Secret already exists"
-
-      - name: Determine Kubernetes namespace name
-        id: determine_namespace
-        # run: echo "K8S_NAMESPACE=${{ github.actor_id }}" >> $GITHUB_ENV
-        run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
+            -n $K8S_NAMESPACE || echo "Secret already exists"
 
       # - name: Check if namespace exists on the cluster
       #   id: check_namespace
