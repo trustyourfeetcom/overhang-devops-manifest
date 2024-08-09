@@ -25,7 +25,7 @@ resources:
 environment:
   variables:
     - name: SPRING_CONFIG_IMPORT
-      value: http://overhang-backend-config
+      value: overhang-backend-config
     - name: SPRING_PROFILES_ACTIVE
       value: dev
     - name: JWT_EXPIRATION
