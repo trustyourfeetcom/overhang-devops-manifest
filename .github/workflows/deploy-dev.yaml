@@ -114,7 +114,7 @@ jobs:
             --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_REGISTRY_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local
+            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Deploy Auth Service (overhang-backend-auth)
@@ -123,7 +123,7 @@ jobs:
             --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_AUTH_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local
+            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
             --namespace $K8S_NAMESPACE --create-namespace
 
@@ -133,7 +133,7 @@ jobs:
             --set image.repository=$DOCKERHUB_NAMESPACE/$OVERHANG_BACKEND_GATEWAY_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local
+            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Verify deployments
