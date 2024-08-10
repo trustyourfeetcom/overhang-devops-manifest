@@ -35,6 +35,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
   spec:
     ingressClassName: nginx
   paths:
@@ -42,7 +43,7 @@ ingress:
       pathType: Prefix
   backend:
     serviceName: overhang-backend-gateway
-    servicePort: 8080
+    servicePort: 443
 
 spring:
   config:
