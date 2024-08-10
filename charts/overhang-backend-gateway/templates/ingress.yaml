@@ -3,6 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "overhang-backend-gateway.fullname" . }}-ingress
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "overhang-backend-gateway.labels" . | nindent 4 }}
   annotations:
