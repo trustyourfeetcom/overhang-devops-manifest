@@ -112,7 +112,7 @@ jobs:
           helm upgrade --install $OVERHANG_BACKEND_REGISTRY_NAME ./charts/$OVERHANG_BACKEND_REGISTRY_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888 \
+            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Deploy Auth Service (overhang-backend-auth)
@@ -120,7 +120,7 @@ jobs:
           helm upgrade --install $OVERHANG_BACKEND_AUTH_NAME ./charts/$OVERHANG_BACKEND_AUTH_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888 \
+            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
             --namespace $K8S_NAMESPACE --create-namespace
 
@@ -129,7 +129,7 @@ jobs:
           helm upgrade --install $OVERHANG_BACKEND_GATEWAY_NAME ./charts/$OVERHANG_BACKEND_GATEWAY_NAME \
             --set image.tag=latest \
             --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888 \
+            --set spring.config.import=overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Verify deployments
