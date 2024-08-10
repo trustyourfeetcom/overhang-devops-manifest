@@ -64,7 +64,7 @@ jobs:
       #       echo "K8S_NAMESPACE_EXISTS=false" >> $GITHUB_ENV
       #     fi
 
-      - name: Clean up service namespace
+      - name: Clean up Service Namespace
         run: |
           if kubectl get namespace $K8S_NAMESPACE; then
             kubectl delete all --all -n $K8S_NAMESPACE
@@ -74,7 +74,7 @@ jobs:
             echo "Namespace $K8S_NAMESPACE does not exist, skipping cleanup."
           fi
 
-      - name: Clean up Ingress Nginx namespace
+      - name: Clean up Ingress Nginx Namespace
         run: |
           if kubectl get namespace $INGRESS_NGINX_K8S_NAMESPACE; then
             kubectl delete all --all -n $INGRESS_NGINX_K8S_NAMESPACE
@@ -91,7 +91,7 @@ jobs:
             --docker-username=${{ secrets.DOCKERHUB_USERNAME }} \
             --docker-password=${{ secrets.DOCKERHUB_TOKEN }} \
             --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
-            -n $K8S_NAMESPACE || echo "Secret already exists"
+            -n $INGRESS_NGINX_K8S_NAMESPACE || echo "Secret already exists"
 
       - name: Install NGINX Ingress Controller
         run: |
