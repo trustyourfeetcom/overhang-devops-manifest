@@ -38,7 +38,7 @@ auth:
 
 db:
   host: http://localhost
-  port: 5432
+  port: "5432"
   name: postgres
   username: postgres
   password: postgres
