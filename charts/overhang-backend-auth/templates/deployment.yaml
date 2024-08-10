@@ -45,7 +45,7 @@ spec:
           value: {{ .Values.db.name }}
         - name: DB_USERNAME
           value: {{ .Values.db.username }}
-        - name: DB_HOST
+        - name: DB_PASSWORD
           value: {{ .Values.db.password }}
         - name: JWT_SECRET
           valueFrom:
