@@ -27,7 +27,7 @@ environment:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
     - name: JWT_EXPIRATION
-      value: 86400000
+      value: !!string 86400000
 
 spring:
   config:
