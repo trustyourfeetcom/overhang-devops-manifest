@@ -98,7 +98,7 @@ jobs:
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo update
           helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-            --namespace $INGRESS_NGINX_K8S_NAMESPACE --create-namespace --wait
+            --namespace $K8S_NAMESPACE --create-namespace --wait
 
       - name: Deploy Config Service (overhang-backend-config)
         run: |
