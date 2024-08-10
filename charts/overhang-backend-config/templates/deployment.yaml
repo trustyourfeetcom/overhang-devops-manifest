@@ -28,12 +28,12 @@ spec:
           requests:
             cpu: {{ .Values.resources.requests.cpu }}
             memory: {{ .Values.resources.requests.memory }}
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8888
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        # livenessProbe:
+        #   httpGet:
+        #     path: /actuator/health
+        #     port: 8888
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
         env:
         {{- range .Values.environment.variables }}
         - name: {{ .name }}
