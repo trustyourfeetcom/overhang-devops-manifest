@@ -123,7 +123,7 @@ jobs:
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
             --set db.host=${{ secrets.DB_HOST }} \
-            --set db.port="25060" \
+            --set db.port=25060 \
             --set db.name=auth_dev \
             --set db.username=${{ secrets.DB_USERNAME }} \
             --set db.password=${{ secrets.DB_PASSWORD }} \
