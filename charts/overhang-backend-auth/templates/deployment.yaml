@@ -37,6 +37,16 @@ spec:
         env:
         - name: SPRING_CONFIG_IMPORT
           value: {{ .Values.spring.config.import }}
+        - name: DB_HOST
+          value: {{ .Values.db.host }}
+        - name: DB_PORT
+          value: {{ .Values.db.port }}
+        - name: DB_NAME
+          value: {{ .Values.db.name }}
+        - name: DB_USERNAME
+          value: {{ .Values.db.username }}
+        - name: DB_HOST
+          value: {{ .Values.db.password }}
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
