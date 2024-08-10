@@ -43,7 +43,7 @@ ingress:
       pathType: Prefix
   backend:
     serviceName: overhang-backend-gateway
-    servicePort: 443
+    servicePort: 80
 
 spring:
   config:

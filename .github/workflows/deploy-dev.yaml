@@ -104,39 +104,39 @@ jobs:
         run: |
           helm upgrade --install $OVERHANG_BACKEND_CONFIG_NAME ./charts/$OVERHANG_BACKEND_CONFIG_NAME \
             --set image.tag=latest \
-            --set namespace=$K8S_NAMESPACE \
-            --namespace $K8S_NAMESPACE --create-namespace
+            --set namespace=$INGRESS_NGINX_K8S_NAMEPSACE \
+            --namespace $INGRESS_NGINX_K8S_NAMEPSACE --create-namespace
 
       - name: Deploy Registry Service (overhang-backend-registry)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_REGISTRY_NAME ./charts/$OVERHANG_BACKEND_REGISTRY_NAME \
             --set image.tag=latest \
-            --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
-            --namespace $K8S_NAMESPACE --create-namespace
+            --set namespace=$INGRESS_NGINX_K8S_NAMEPSACE \
+            --set spring.config.import=http://overhang-backend-config.$INGRESS_NGINX_K8S_NAMEPSACE.svc.cluster.local:8888/ \
+            --namespace $INGRESS_NGINX_K8S_NAMEPSACE --create-namespace
 
       - name: Deploy Auth Service (overhang-backend-auth)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_AUTH_NAME ./charts/$OVERHANG_BACKEND_AUTH_NAME \
             --set image.tag=latest \
-            --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
+            --set namespace=$INGRESS_NGINX_K8S_NAMEPSACE \
+            --set spring.config.import=http://overhang-backend-config.$INGRESS_NGINX_K8S_NAMEPSACE.svc.cluster.local:8888/ \
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
             --set db.host=${{ secrets.DB_HOST }} \
             --set db.port=25060 \
             --set db.name=auth_dev \
             --set db.username=${{ secrets.DB_USERNAME }} \
             --set db.password=${{ secrets.DB_PASSWORD }} \
-            --namespace $K8S_NAMESPACE --create-namespace
+            --namespace $INGRESS_NGINX_K8S_NAMEPSACE --create-namespace
 
       - name: Deploy Gateway Service (overhang-backend-gateway)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_GATEWAY_NAME ./charts/$OVERHANG_BACKEND_GATEWAY_NAME \
             --set image.tag=latest \
-            --set namespace=$K8S_NAMESPACE \
-            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
+            --set namespace=$INGRESS_NGINX_K8S_NAMEPSACE \
+            --set spring.config.import=http://overhang-backend-config.$INGRESS_NGINX_K8S_NAMEPSACE.svc.cluster.local:8888/ \
             --set ingress.host=dev.overhang.trustyourfeet.com \
-            --namespace $K8S_NAMESPACE --create-namespace
+            --namespace $INGRESS_NGINX_K8S_NAMEPSACE --create-namespace
 
       - name: Verify deployments
         run: |
