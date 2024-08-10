@@ -20,7 +20,7 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: {{ index .Values.service.ports 0 "port" }}
+        - containerPort: {{ index .Values.service.ports 0 "targetPort" }}
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}
