@@ -40,10 +40,6 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      - name: Install NGINX Gateway Fabric using Helm
-        run: |
-          helm install ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
-
       - name: Save DigitalOcean kubeconfig and setup Kubernetes context
         run: |
           doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
@@ -51,22 +47,7 @@ jobs:
 
       - name: Determine Kubernetes namespace name
         id: determine_namespace
-        # run: echo "K8S_NAMESPACE=${{ github.actor_id }}" >> $GITHUB_ENV
         run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
-
-      # - name: Check if namespace exists on the cluster
-      #   id: check_namespace
-      #   env:
-      #     K8S_NAMESPACE: ${{ env.K8S_NAMESPACE }}
-      #   run: |
-      #     if kubectl get namespace $K8S_NAMESPACE; then
-      #       echo "Namespace $K8S_NAMESPACE already exists."
-      #       echo "K8S_NAMESPACE_EXISTS=true" >> $GITHUB_ENV
-      #     else
-      #       echo "Creating namespace $K8S_NAMESPACE."
-      #       kubectl create namespace $K8S_NAMESPACE
-      #       echo "K8S_NAMESPACE_EXISTS=false" >> $GITHUB_ENV
-      #     fi
 
       - name: Clean up Service Namespace
         run: |
