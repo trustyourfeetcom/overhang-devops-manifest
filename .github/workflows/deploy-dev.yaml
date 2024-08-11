@@ -40,6 +40,11 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+      - name: Install NGINX Gateway Fabric using Helm
+        run: |
+          helm install ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
+          helm install ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric  --set nginx.image.repository=private-registry.nginx.com/nginx-gateway-fabric/nginx-plus --set nginx.plus=true --set serviceAccount.imagePullSecret=nginx-plus-registry-secret --create-namespace -n nginx-gateway
+
       - name: Save DigitalOcean kubeconfig and setup Kubernetes context
         run: |
           doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
