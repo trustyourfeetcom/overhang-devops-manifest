@@ -15,7 +15,7 @@ gateway:
   className: nginx
 
 route:
-  name: overhang-route
+  name: overhang-gateway-route
   path: /
 
 service:

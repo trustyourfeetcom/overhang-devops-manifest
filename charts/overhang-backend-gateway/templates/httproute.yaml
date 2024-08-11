@@ -9,8 +9,8 @@ spec:
   rules:
     - matches:
         - path:
-            type: Prefix
+            type: PathPrefix
             value: {{ .Values.route.path }}
       backendRefs:
-        - name: {{ .Values.service.name }}
-          port: {{ .Values.service.port }}
+        - name: {{ .Release.Name }}
+          port: {{ index .Values.service.ports 0 "port" }}
