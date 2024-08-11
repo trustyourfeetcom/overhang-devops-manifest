@@ -76,7 +76,7 @@ jobs:
             --docker-username=${{ secrets.DOCKERHUB_USERNAME }} \
             --docker-password=${{ secrets.DOCKERHUB_TOKEN }} \
             --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
-            -n $INGRESS_NGINX_K8S_NAMESPACE || echo "Secret already exists"
+            -n $K8S_NAMESPACE || echo "Secret already exists"
 
       # - name: Install NGINX Ingress Controller
       #   run: |
