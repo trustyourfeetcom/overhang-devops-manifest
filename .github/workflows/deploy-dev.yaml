@@ -121,7 +121,7 @@ jobs:
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
             --set ingress.host=dev.overhang.trustyourfeet.com \
-            --set overhang.service.auth.url=overhang-backend-auth.$K8S_NAMESPACE.svc.cluster.local \
+            --set overhang.service.auth.url=http://overhang-backend-auth.$K8S_NAMESPACE.svc.cluster.local:8081/ \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Verify deployments
