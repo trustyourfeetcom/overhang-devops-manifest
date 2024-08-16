@@ -31,7 +31,7 @@ environment:
 
 spring:
   config:
-    import: http://overhang-backend-config:8888
+    import: http://overhang-backend-config:8888/
 
 auth:
   jwtSecret: ""
