@@ -17,7 +17,7 @@ gateway:
 route:
   name: overhang-gateway-route
   path: /
-  hostname: dev.overhang.trustyourfeet.com
+  hostname: localhost
 
 service:
   type: LoadBalancer
