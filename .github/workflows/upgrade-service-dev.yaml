@@ -60,6 +60,7 @@ jobs:
         if: ${{ github.event.inputs.service == env.OVERHANG_BACKEND_CONFIG_NAME }}
         run: |
           helm upgrade --install $OVERHANG_BACKEND_CONFIG_NAME ./charts/$OVERHANG_BACKEND_CONFIG_NAME \
+            -f ./charts/$OVERHANG_BACKEND_CONFIG_NAME/values.yaml
             --set image.tag=${{ github.event.inputs.docker_tag }} \
             --set namespace=$K8S_NAMESPACE \
             --namespace $K8S_NAMESPACE --create-namespace
@@ -68,6 +69,7 @@ jobs:
         if: ${{ github.event.inputs.service == env.OVERHANG_BACKEND_AUTH_NAME }}
         run: |
           helm upgrade --install $OVERHANG_BACKEND_AUTH_NAME ./charts/$OVERHANG_BACKEND_AUTH_NAME \
+            -f ./charts/$OVERHANG_BACKEND_AUTH_NAME/values.yaml
             --set image.tag=${{ github.event.inputs.docker_tag }} \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local/ \
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
@@ -83,6 +85,7 @@ jobs:
         if: ${{ github.event.inputs.service == env.OVERHANG_BACKEND_GATEWAY_NAME }}
         run: |
           helm upgrade --install $OVERHANG_BACKEND_GATEWAY_NAME ./charts/$OVERHANG_BACKEND_GATEWAY_NAME \
+            -f ./charts/$OVERHANG_BACKEND_GATEWAY_NAME/values.yaml
             --set image.tag=${{ github.event.inputs.docker_tag }} \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local/ \
             --set ingress.host=dev.overhang.trustyourfeet.com \
