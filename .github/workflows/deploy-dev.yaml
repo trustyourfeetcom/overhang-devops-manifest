@@ -1,7 +1,20 @@
-name: Deploy to Dev Cluster
+name: Deploy to Cluster (dev)
 
 on:
   workflow_dispatch:
+    inputs:
+      overhang-backend-config:
+        description: "Docker image tag"
+        required: true
+        default: "latest"
+      overhang-backend-auth:
+        description: "Docker image tag"
+        required: true
+        default: "latest"
+      overhang-backend-gateway:
+        description: "Docker image tag"
+        required: true
+        default: "latest"
 
 jobs:
   deploy:
