@@ -9,9 +9,7 @@ jobs:
 
     env:
       DOCKERHUB_NAMESPACE: samjsui
-      INGRESS_NGINX_K8S_NAMESPACE: ingress-nginx
       OVERHANG_BACKEND_CONFIG_NAME: overhang-backend-config
-      OVERHANG_BACKEND_REGISTRY_NAME: overhang-backend-registry
       OVERHANG_BACKEND_AUTH_NAME: overhang-backend-auth
       OVERHANG_BACKEND_GATEWAY_NAME: overhang-backend-gateway
 

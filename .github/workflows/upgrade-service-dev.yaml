@@ -1,0 +1,91 @@
+name: Upgrade Service (dev)
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Service to upgrade"
+        required: true
+        type: string
+      docker_tag:
+        description: "Docker image tag"
+        required: true
+        type: string
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_NAMESPACE: samjsui
+      OVERHANG_BACKEND_CONFIG_NAME: overhang-backend-config
+      OVERHANG_BACKEND_AUTH_NAME: overhang-backend-auth
+      OVERHANG_BACKEND_GATEWAY_NAME: overhang-backend-gateway
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "latest"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.2.0
+        with:
+          version: "latest"
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DigitalOcean kubeconfig and setup Kubernetes context
+        run: |
+          doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
+          kubectl config current-context
+
+      - name: Determine Kubernetes namespace name
+        id: determine_namespace
+        run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
+
+      - name: Deploy Config Service (overhang-backend-config)
+        if: ${{ github.event.inputs.service == env.OVERHANG_BACKEND_CONFIG_NAME }}
+        run: |
+          helm upgrade --install $OVERHANG_BACKEND_CONFIG_NAME ./charts/$OVERHANG_BACKEND_CONFIG_NAME \
+            --set image.tag=${{ github.event.inputs.docker_tag }} \
+            --set namespace=$K8S_NAMESPACE \
+            --namespace $K8S_NAMESPACE --create-namespace
+
+      - name: Deploy Auth Service (overhang-backend-auth)
+        if: ${{ github.event.inputs.service == env.OVERHANG_BACKEND_AUTH_NAME }}
+        run: |
+          helm upgrade --install $OVERHANG_BACKEND_AUTH_NAME ./charts/$OVERHANG_BACKEND_AUTH_NAME \
+            --set image.tag=${{ github.event.inputs.docker_tag }} \
+            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local/ \
+            --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
+            --set db.host=${{ secrets.DB_HOST }} \
+            --set db.port=25060 \
+            --set db.name=auth_dev \
+            --set db.username=${{ secrets.DB_USERNAME }} \
+            --set db.password=${{ secrets.DB_PASSWORD }} \
+            --set namespace=$K8S_NAMESPACE \
+            --namespace $K8S_NAMESPACE --create-namespace
+
+      - name: Deploy Gateway Service (overhang-backend-gateway)
+        if: ${{ github.event.inputs.service == env.OVERHANG_BACKEND_GATEWAY_NAME }}
+        run: |
+          helm upgrade --install $OVERHANG_BACKEND_GATEWAY_NAME ./charts/$OVERHANG_BACKEND_GATEWAY_NAME \
+            --set image.tag=${{ github.event.inputs.docker_tag }} \
+            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local/ \
+            --set ingress.host=dev.overhang.trustyourfeet.com \
+            --set overhang.service.auth.url=http://overhang-backend-auth.$K8S_NAMESPACE.svc.cluster.local/ \
+            --set namespace=$K8S_NAMESPACE \
+            --namespace $K8S_NAMESPACE --create-namespace
