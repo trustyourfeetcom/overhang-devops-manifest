@@ -3,42 +3,46 @@ namespace: default
 replicaCount: 1
 
 image:
-  repository: overhang-backend-gateway
+  repository: samjsui/overhang-backend-gateway
   tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
   name: dev-overhang-registry
 
+gateway:
+  name: overhang-gateway
+  className: nginx
+
+route:
+  name: overhang-gateway-route
+  path: /
+  hostname: localhost
+
 service:
   type: LoadBalancer
   ports:
-    - port: 8080
+    - port: 80
       targetPort: 8080
 
 resources:
   requests:
-    cpu: "50m"
-    memory: "64Mi"
+    cpu: "150m"
+    memory: "256Mi"
   limits:
-    cpu: "100m"
-    memory: "128Mi"
+    cpu: "300m"
+    memory: "512Mi"
 
 environment:
   variables:
-    - name: ENV_VAR
-      value: "value"
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
 
-ingress:
-  enabled: true
-  host: dev.overhang.trustyourfeet.com
-  annotations:
-    kubernetes.io/ingress.class: nginx
-  spec:
-    ingressClassName: nginx
-  paths:
-    - path: /
-      pathType: Prefix
-  backend:
-    serviceName: overhang-backend-gateway
-    servicePort: 8080
+spring:
+  config:
+    import: http://overhang-backend-config:8888/
+
+overhang:
+  service:
+    auth:
+      url: overhang-backend-auth.svc.cluster.local

@@ -1,7 +1,9 @@
+namespace: default
+
 replicaCount: 1
 
 image:
-  repository: overhang-backend-auth
+  repository: samjsui/overhang-backend-auth
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -14,13 +16,29 @@ service:
 
 resources:
   requests:
-    cpu: "50m"
-    memory: "64Mi"
+    cpu: "150m"
+    memory: "256Mi"
   limits:
-    cpu: "100m"
-    memory: "128Mi"
+    cpu: "300m"
+    memory: "512Mi"
 
 environment:
   variables:
-    - name: ENV_VAR
-      value: "value"
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
+    - name: JWT_EXPIRATION
+      value: !!string 86400000
+
+spring:
+  config:
+    import: http://overhang-backend-config:8888/
+
+auth:
+  jwtSecret: ""
+
+db:
+  host: http://localhost
+  port: 5432
+  name: postgres
+  username: postgres
+  password: postgres

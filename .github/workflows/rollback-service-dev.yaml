@@ -1,0 +1,44 @@
+name: Rollback Service (dev)
+
+on:
+  workflow_dispatch:
+    inputs:
+      service_name:
+        description: "The name of the service to rollback"
+        required: true
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "latest"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.2.0
+        with:
+          version: "latest"
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DigitalOcean kubeconfig and setup Kubernetes context
+        run: |
+          doctl kubernetes cluster kubeconfig save ${{ secrets.DO_CLUSTER_CREDENTIALS_DEV }}
+          kubectl config current-context
+
+      - name: Determine Kubernetes namespace name
+        id: determine_namespace
+        run: echo "K8S_NAMESPACE=dev" >> $GITHUB_ENV
+
+      - name: Rollback Helm Release
+        run: |
+          helm rollback ${{ github.event.inputs.service_name }} --namespace $K8S_NAMESPACE
