@@ -4,19 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       overhang-backend-config:
-        description: "Docker image tag"
+        description: "overhang-backend-config Docker image tag"
         required: true
         default: "latest"
       overhang-backend-auth:
-        description: "Docker image tag"
+        description: "overhang-backend-auth Docker image tag"
         required: true
         default: "latest"
       overhang-backend-identity:
-        description: "Docker image tag"
+        description: "overhang-backend-identity Docker image tag"
         required: true
         default: "latest"
       overhang-backend-gateway:
-        description: "Docker image tag"
+        description: "overhang-backend-gateway Docker image tag"
         required: true
         default: "latest"
 
@@ -84,15 +84,20 @@ jobs:
             --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
             -n $K8S_NAMESPACE || echo "Secret already exists"
 
+      - name: Add Bitnami Helm Repository
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+
       - name: Deploy Zookeeper
         run: |
-          helm upgrade --install zookeeper ./charts/zookeeper \
+          helm upgrade --install zookeeper bitnami/zookeeper \
             --values ./charts/zookeeper/values.yaml \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Deploy Kafka
         run: |
-          helm upgrade --install kafka ./charts/kafka \
+          helm upgrade --install kafka bitnami/kafka \
             --values ./charts/kafka/values.yaml \
             --namespace $K8S_NAMESPACE --create-namespace
 
