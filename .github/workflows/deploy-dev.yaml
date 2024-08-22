@@ -89,12 +89,6 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo update
 
-      - name: Deploy Zookeeper
-        run: |
-          helm upgrade --install zookeeper bitnami/zookeeper \
-            --values ./charts/zookeeper/values.yaml \
-            --namespace $K8S_NAMESPACE --create-namespace
-
       - name: Deploy Kafka
         run: |
           helm upgrade --install kafka bitnami/kafka \
