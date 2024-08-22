@@ -1,0 +1,35 @@
+auth:
+  username: postgres
+  password: postgres
+
+service:
+  type: ClusterIP
+  port: 5432
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 500m
+  limits:
+    memory: 1Gi
+    cpu: 1000m
+
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: latest
+  pullPolicy: IfNotPresent
+
+volumePermissions:
+  enabled: false
+
+initdbScripts:
+  00_create_databases.sql: |
+    CREATE DATABASE auth_dev;
