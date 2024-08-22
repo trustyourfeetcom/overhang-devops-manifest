@@ -37,6 +37,8 @@ spec:
         env:
         - name: SPRING_CONFIG_IMPORT
           value: {{ .Values.spring.config.import }}
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: {{ .Values.kafka.bootstrap.servers }}
         - name: DB_HOST
           value: {{ .Values.db.host }}
         - name: DB_PORT

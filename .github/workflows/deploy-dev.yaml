@@ -11,6 +11,10 @@ on:
         description: "Docker image tag"
         required: true
         default: "latest"
+      overhang-backend-identity:
+        description: "Docker image tag"
+        required: true
+        default: "latest"
       overhang-backend-gateway:
         description: "Docker image tag"
         required: true
@@ -24,6 +28,7 @@ jobs:
       DOCKERHUB_NAMESPACE: samjsui
       OVERHANG_BACKEND_CONFIG_NAME: overhang-backend-config
       OVERHANG_BACKEND_AUTH_NAME: overhang-backend-auth
+      OVERHANG_BACKEND_IDENTITY_NAME: overhang-backend-identity
       OVERHANG_BACKEND_GATEWAY_NAME: overhang-backend-gateway
 
     steps:
@@ -79,19 +84,32 @@ jobs:
             --docker-email=${{ secrets.DOCKERHUB_EMAIL }} \
             -n $K8S_NAMESPACE || echo "Secret already exists"
 
+      - name: Deploy Zookeeper
+        run: |
+          helm upgrade --install zookeeper ./charts/zookeeper \
+            --values ./charts/zookeeper/values.yaml \
+            --namespace $K8S_NAMESPACE --create-namespace
+
+      - name: Deploy Kafka
+        run: |
+          helm upgrade --install kafka ./charts/kafka \
+            --values ./charts/kafka/values.yaml \
+            --namespace $K8S_NAMESPACE --create-namespace
+
       - name: Deploy Config Service (overhang-backend-config)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_CONFIG_NAME ./charts/$OVERHANG_BACKEND_CONFIG_NAME \
-            --set image.tag=latest \
+            --set image.tag=${{ github.event.inputs.overhang-backend-config }} \
             --set namespace=$K8S_NAMESPACE \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Deploy Auth Service (overhang-backend-auth)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_AUTH_NAME ./charts/$OVERHANG_BACKEND_AUTH_NAME \
-            --set image.tag=latest \
+            --set image.tag=${{ github.event.inputs.overhang-backend-auth }} \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
+            --set kafka.bootstrap.servers=kafka.$K8S_NAMESPACE.svc.cluster.local:9092 \
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
             --set db.host=${{ secrets.DB_HOST }} \
             --set db.port=25060 \
@@ -99,15 +117,30 @@ jobs:
             --set db.username=${{ secrets.DB_USERNAME }} \
             --set db.password=${{ secrets.DB_PASSWORD }} \
             --namespace $K8S_NAMESPACE --create-namespace
+      
+      - name: Deploy Identity Service (overhang-backend-identity)
+        run: |
+          helm upgrade --install $OVERHANG_BACKEND_IDENTITY_NAME ./charts/$OVERHANG_BACKEND_IDENTITY_NAME \
+            --set image.tag=${{ github.event.inputs.overhang-backend-identity }} \
+            --set namespace=$K8S_NAMESPACE \
+            --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
+            --set kafka.bootstrap.servers=kafka.$K8S_NAMESPACE.svc.cluster.local:9092 \
+            --set db.host=${{ secrets.DB_HOST }} \
+            --set db.port=25060 \
+            --set db.name=identity_dev \
+            --set db.username=${{ secrets.DB_USERNAME }} \
+            --set db.password=${{ secrets.DB_PASSWORD }} \
+            --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Deploy Gateway Service (overhang-backend-gateway)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_GATEWAY_NAME ./charts/$OVERHANG_BACKEND_GATEWAY_NAME \
-            --set image.tag=latest \
+            --set image.tag=${{ github.event.inputs.overhang-backend-gateway }} \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
             --set ingress.host=dev.overhang.trustyourfeet.com \
             --set overhang.service.auth.url=http://overhang-backend-auth.$K8S_NAMESPACE.svc.cluster.local:8081/ \
+            --set overhang.service.identity.url=http://overhang-backend-identity.$K8S_NAMESPACE.svc.cluster.local:8082/ \
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Verify deployments

@@ -1,0 +1,43 @@
+namespace: default
+
+replicaCount: 1
+
+image:
+  repository: samjsui/overhang-backend-identity
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  name: dev-overhang-registry
+
+service:
+  type: ClusterIP
+  port: 8082
+
+resources:
+  requests:
+    cpu: "150m"
+    memory: "256Mi"
+  limits:
+    cpu: "250m"
+    memory: "512Mi"
+
+environment:
+  variables:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
+
+spring:
+  config:
+    import: http://overhang-backend-config:8888/
+
+kafka:
+  bootstrap:
+    servers: kafka.default.svc.cluster.local:9092
+
+db:
+  host: http://localhost
+  port: 5432
+  name: postgres
+  username: postgres
+  password: postgres

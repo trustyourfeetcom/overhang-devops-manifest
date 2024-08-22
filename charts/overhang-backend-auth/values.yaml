@@ -33,6 +33,10 @@ spring:
   config:
     import: http://overhang-backend-config:8888/
 
+kafka:
+  bootstrap:
+    servers: kafka.default.svc.cluster.local:9092
+
 auth:
   jwtSecret: ""
 
