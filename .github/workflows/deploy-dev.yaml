@@ -4,19 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       overhang-backend-config:
-        description: "Docker image tag"
+        description: "overhang-backend-config Docker image tag"
         required: true
         default: "latest"
       overhang-backend-auth:
-        description: "Docker image tag"
+        description: "overhang-backend-auth Docker image tag"
         required: true
         default: "latest"
       overhang-backend-identity:
-        description: "Docker image tag"
+        description: "overhang-backend-identity Docker image tag"
         required: true
         default: "latest"
       overhang-backend-gateway:
-        description: "Docker image tag"
+        description: "overhang-backend-gateway Docker image tag"
         required: true
         default: "latest"
 
