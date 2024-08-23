@@ -5,15 +5,7 @@ service:
   port: 9092
 
 controller:
-  initContainerResources:
-    limits:
-      cpu: "100m"
-      memory: "256Mi"
-      ephemeral-storage: "50Mi"
-    requests:
-      cpu: "200m"
-      memory: "256Mi"
-      ephemeral-storage: "50Mi"
+  resourcesPreset: "nano"
 
 zookeeper:
   enabled: false
