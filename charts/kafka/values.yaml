@@ -4,13 +4,16 @@ service:
   type: ClusterIP
   port: 9092
 
-resources:
-  requests:
-    cpu: "200m"
-    memory: "128Mi"
-  limits:
-    cpu: "300m"
-    memory: "256Mi"
+controller:
+  initContainerResources:
+    limits:
+      cpu: "100m"
+      memory: "256Mi"
+      ephemeral-storage: "50Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+      ephemeral-storage: "50Mi"
 
 zookeeper:
   enabled: false
