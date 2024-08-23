@@ -6,10 +6,10 @@ service:
 
 resources:
   requests:
-    cpu: "150m"
+    cpu: "100m"
     memory: "256Mi"
   limits:
-    cpu: "250m"
+    cpu: "200m"
     memory: "512Mi"
 
 zookeeper:
