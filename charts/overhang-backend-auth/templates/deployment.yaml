@@ -37,8 +37,14 @@ spec:
         env:
         - name: SPRING_CONFIG_IMPORT
           value: {{ .Values.spring.config.import }}
-        - name: KAFKA_BOOTSTRAP_SERVERS
-          value: {{ .Values.kafka.bootstrap.servers }}
+        - name: RABBITMQ_HOST
+          value: {{ .Values.rabbitmq.host }}
+        - name: RABBITMQ_PORT
+          value: {{ .Values.rabbitmq.port }}
+        - name: RABBITMQ_USERNAME
+          value: {{ .Values.rabbitmq.username }}
+        - name: RABBITMQ_PASSWORD
+          value: {{ .Values.rabbitmq.password }}
         - name: DB_HOST
           value: {{ .Values.db.host }}
         - name: DB_PORT

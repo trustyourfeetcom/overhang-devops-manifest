@@ -89,10 +89,11 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo update
 
-      - name: Deploy Kafka
+      - name: Deploy RabbitMQ
         run: |
-          helm upgrade --install kafka bitnami/kafka \
-            --values ./charts/kafka/values.yaml \
+          helm upgrade --install rabbitmq bitnami/rabbitmq \
+            --set auth.username=${{ secrets.RABBITMQ_USERNAME }} \
+            --set auth.password=${{ secrets.RABBITMQ_PASSWORD }}
             --namespace $K8S_NAMESPACE --create-namespace
 
       - name: Deploy Config Service (overhang-backend-config)
@@ -108,7 +109,10 @@ jobs:
             --set image.tag=${{ github.event.inputs.overhang-backend-auth }} \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
-            --set kafka.bootstrap.servers=kafka.$K8S_NAMESPACE.svc.cluster.local:9092 \
+            --set rabbitmq.host=rabbitmq.$K8S_NAMESPACE.svc.cluster.local
+            --set rabbitmq.port=5672
+            --set rabbitmq.username=${{ secrets.RABBITMQ_USERNAME }}
+            --set rabbitmq.password=${{ secrets.RABBITMQ_PASSWORD }}
             --set auth.jwtSecret=${{ secrets.AUTH_JWT_SECRET }} \
             --set db.host=${{ secrets.DB_HOST }} \
             --set db.port=25060 \
@@ -116,14 +120,17 @@ jobs:
             --set db.username=${{ secrets.DB_USERNAME }} \
             --set db.password=${{ secrets.DB_PASSWORD }} \
             --namespace $K8S_NAMESPACE --create-namespace
-      
+
       - name: Deploy Identity Service (overhang-backend-identity)
         run: |
           helm upgrade --install $OVERHANG_BACKEND_IDENTITY_NAME ./charts/$OVERHANG_BACKEND_IDENTITY_NAME \
             --set image.tag=${{ github.event.inputs.overhang-backend-identity }} \
             --set namespace=$K8S_NAMESPACE \
             --set spring.config.import=http://overhang-backend-config.$K8S_NAMESPACE.svc.cluster.local:8888/ \
-            --set kafka.bootstrap.servers=kafka.$K8S_NAMESPACE.svc.cluster.local:9092 \
+            --set rabbitmq.host=rabbitmq.$K8S_NAMESPACE.svc.cluster.local
+            --set rabbitmq.port=5672
+            --set rabbitmq.username=${{ secrets.RABBITMQ_USERNAME }}
+            --set rabbitmq.password=${{ secrets.RABBITMQ_PASSWORD }}
             --set db.host=${{ secrets.DB_HOST }} \
             --set db.port=25060 \
             --set db.name=identity_dev \

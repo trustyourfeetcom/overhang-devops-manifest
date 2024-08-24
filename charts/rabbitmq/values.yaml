@@ -1,0 +1,18 @@
+replicaCount: 1
+
+auth:
+  username: guest
+  password: guest
+  erlangCookie: secretcookie
+
+service:
+  type: ClusterIP
+  port: 5672
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "200m"
+    memory: "512Mi"
